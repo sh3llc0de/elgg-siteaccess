@@ -14,7 +14,7 @@ git archive --format=tar --prefix="${PKG_NAME}"/ HEAD | tar Cxf "${PKG_PATH}" -
 ((VER_REV++))
 sed -i "" -e "s/VER_MAJOR/${VER_MAJOR}/g;s/VER_MINOR/${VER_MINOR}/g;s/VER_REV/${VER_REV}/g" ${PKG_PATH}/${PKG_NAME}/manifest.xml
 echo "${VER_REV}" > version.txt
-if [[ "${0}" == "commit" ]]; then
+if [[ "${1}" == "commit" ]]; then
 	git add version.txt
 	git commit -m "pkg tag ${VER_MAJOR}.${VER_MINOR}.${VER_REV}"
 	git tag "${VER_MAJOR}.${VER_MINOR}.${VER_REV}"
