@@ -3,10 +3,10 @@
     <name>Site Access</name>
     <id>siteaccess</id>
     <author>shellcode</author>
-    <version>2.3.5</version>
+    <version>VER_MAJOR.VER_MINOR.VER_REV</version>
     <description>Registration Plugin</description>
     <website>http://www.cryptogeek.org</website>
-    <copyright>(c) shellcode 2015</copyright>
+    <copyright>(c) Wade Benson 2015</copyright>
     <license>FreeBSD license</license>
     <requires>
         <type>elgg_release</type>
