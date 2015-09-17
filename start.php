@@ -1,10 +1,37 @@
 <?php
+/*
+Copyright (c) 2015, Wade Benson
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of the FreeBSD Project.
+ */
 
 elgg_register_event_handler('init', 'system', 'siteaccess_init');
 
 function siteaccess_init() {
 	elgg_register_admin_menu_item('administer', 'siteaccess', 'users');
-	elgg_register_admin_menu_item('configure', 'siteaccess', 'settings');
 
 	$action_path = dirname(__FILE__) . '/actions/siteaccess';
 	elgg_extend_view('register/extend', 'siteaccess/registration');
@@ -19,7 +46,6 @@ function siteaccess_init() {
 	elgg_register_plugin_hook_handler('register', 'user', 'siteaccess_register_update');
 	elgg_register_plugin_hook_handler('action', 'login', 'siteaccess_login_hook');
 
-	elgg_register_action("siteaccess/admin/settings", "$action_path/admin/settings.php", 'admin');
 	elgg_register_action("siteaccess/admin/validate", "$action_path/admin/validate.php", 'admin');
 
 	elgg_register_event_handler('login:before', 'user', 'siteaccess_check_validation');
@@ -169,7 +195,9 @@ function siteaccess_register_hook($hook, $type, $result, $params) {
 	if (siteaccess_coppa_enabled()) {
 	    $coppa = get_input('coppa');
 	    if (!$coppa) {
-			register_error(elgg_echo('siteaccess:coppa:fail'));
+			$age = elgg_get_plugin_setting('coppa_age', 'siteaccess', '13');
+			if (!$age) $age = 13;
+			register_error(elgg_echo('siteaccess:coppa:fail', array($age)));
 			$error = true;
 	    }
 	}
