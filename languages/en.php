@@ -40,8 +40,11 @@ either expressed or implied, of the FreeBSD Project.
 		'siteaccess:settings:adminvalidate' => 'Require admin validation?',
 		'siteaccess:settings:icbsp' => 'Allow invite code to bypass site passcode?',
 		'siteaccess:settings:icbav' => 'Allow invite code to bypass admin validation?',
+		'siteaccess:settings:icreg' => 'Require invite code to register?',
+		'siteaccess:settings:usernotify' => 'Notify user when admin activated',
 		'siteaccess:sitepassword:text' => 'Enter site password',
 		'siteaccess:sitepassword:invalid' => 'Invalid site password!',
+		'siteaccess:reg:ic:required' => 'Invite code required to register on this server!',
 		'siteaccess:login:failcount' => 'Enter # of login failures permitted before captcha (default: 3)',
 		'siteaccess:coppa:text' => 'I am at least %s years of age',
 		'siteaccess:coppa:fail' => 'You must be at least %s years of age to register for this website',
@@ -79,6 +82,12 @@ either expressed or implied, of the FreeBSD Project.
 		'siteaccess:email:body' => 'Hi %s,
 
 You have %s users in your queue waiting to be validated.
+
+%s',
+		'siteaccess:notify:user:subject' => '[%s] Account Activated',
+		'siteaccess:notify:user:body' => 'Hi %s,
+
+Your account has now been activated.
 
 %s',
 	);

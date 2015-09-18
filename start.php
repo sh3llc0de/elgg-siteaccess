@@ -50,24 +50,24 @@ function siteaccess_init() {
 
 	elgg_register_event_handler('login:before', 'user', 'siteaccess_check_validation');
 
-	$period = elgg_get_plugin_setting('period','siteaccess');
+	$period = elgg_get_plugin_setting('period','siteaccess', 'daily');
 	if (!$period) $period = 'daily';
     elgg_register_plugin_hook_handler('cron', $period, 'siteaccess_cron_hook');
 }
 
 function siteaccess_coppa_enabled()
 {
-	return elgg_get_plugin_setting('coppa', 'siteaccess');
+	return elgg_get_plugin_setting('coppa', 'siteaccess', false);
 }
 
 function siteaccess_admin_validate_enabled()
 {
-	return elgg_get_plugin_setting('adminvalidate', 'siteaccess');
+	return elgg_get_plugin_setting('adminvalidate', 'siteaccess', false);
 }
 
 function siteaccess_site_password_enabled()
 {
-	if (elgg_get_plugin_setting('icbsp', 'siteaccess')) {
+	if (elgg_get_plugin_setting('icbsp', 'siteaccess', false)) {
 	    $params = array(
 			'friend_guid' => get_input('friend_guid'),
 			'invitecode' => get_input('invitecode'),
@@ -76,7 +76,7 @@ function siteaccess_site_password_enabled()
 			return false;
 	    }
 	}
-	return elgg_get_plugin_setting('sitepassword', 'siteaccess');
+	return elgg_get_plugin_setting('sitepassword', 'siteaccess', false);
 }
 
 function siteaccess_reg_captcha_enabled()
@@ -84,7 +84,7 @@ function siteaccess_reg_captcha_enabled()
     if (!extension_loaded("gd"))
 	return false;
 
-    return elgg_get_plugin_setting('regcaptcha', 'siteaccess');
+    return elgg_get_plugin_setting('regcaptcha', 'siteaccess', false);
 }
 
 function siteaccess_login_captcha_enabled()
@@ -92,12 +92,12 @@ function siteaccess_login_captcha_enabled()
     if (!extension_loaded("gd"))
 	return false;
 
-    return elgg_get_plugin_setting('logincaptcha', 'siteaccess');
+    return elgg_get_plugin_setting('logincaptcha', 'siteaccess', false);
 }
 
 function siteaccess_login_threshold()
 {
-    $threshold = intval(elgg_get_plugin_setting('login_fail', 'siteaccess'));
+    $threshold = intval(elgg_get_plugin_setting('login_fail', 'siteaccess', false));
     if (! $threshold ) {
 		$threshold = 3;
     }
@@ -177,6 +177,18 @@ function siteaccess_public_pages($hook, $type, $return_value, $params) {
 
 function siteaccess_register_hook($hook, $type, $result, $params) {
 	$error = false;
+
+	if (elgg_get_plugin_setting('icreg', 'siteaccess', false)) {
+		$params = array(
+			'friend_guid' => get_input('friend_guid'),
+			'invitecode' => get_input('invitecode'),
+	    );
+	    if (!siteaccess_validate_invitecode($params)) {
+			register_error(elgg_echo('siteaccess:reg:ic:required'));
+			return false;
+	    }
+	}
+
 	if (siteaccess_reg_captcha_enabled()) {
 	    if (!siteaccess_validate_captcha()) {
 			$error = true;
@@ -184,7 +196,7 @@ function siteaccess_register_hook($hook, $type, $result, $params) {
 	}
 
 	if (siteaccess_site_password_enabled()) {
-	    $sitepassword = elgg_get_plugin_setting('sitepassword_value', 'siteaccess');
+	    $sitepassword = elgg_get_plugin_setting('sitepassword_value', 'siteaccess', false);
 	    $inputpassword = get_input('siteaccesspassword');
 	    if ((trim($inputpassword) == "") || (strcmp($inputpassword, $sitepassword) != 0)) {
 			register_error(elgg_echo('siteaccess:sitepassword:invalid'));
@@ -214,7 +226,7 @@ function siteaccess_register_update($hook, $type, $result, $params) {
 	}
 	if (siteaccess_admin_validate_enabled()) {
 	    $validated = false;
-	    if (elgg_get_plugin_setting('icbav', 'siteaccess')) {
+	    if (elgg_get_plugin_setting('icbav', 'siteaccess', false)) {
 			if ($valid_invite_code) {
 				$validated = true;
 			}
@@ -341,7 +353,7 @@ function siteaccess_cron_hook($hook, $entity_type, $returnvalue, $params) {
 	if (siteaccess_admin_validate_enabled()) {
 		$site = elgg_get_site_entity();
 
-		$username = elgg_get_plugin_setting('notify', 'siteaccess');
+		$username = elgg_get_plugin_setting('notify', 'siteaccess', false);
 		if ($username) {
 		    $count = siteaccess_count_users('admin_validated', '0');
 		    if ($count > 0) {

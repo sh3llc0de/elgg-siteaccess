@@ -35,6 +35,13 @@ $user = get_entity($guid);
 
 if ($user instanceof ElggUser) {
     create_metadata($user->guid, 'admin_validated', true, '', 0, ACCESS_PUBLIC, false);
+	if (elgg_get_plugin_setting('usernotify', 'siteaccess', false)) {
+		$site = elgg_get_site_entity();
+		$link = "{$site->url}";
+		$subject = elgg_echo('siteaccess:notify:user:subject', array($site->name));
+		$body = elgg_echo('siteaccess:notify:user:body', array($user->name, $link));
+		notify_user($user->guid, $site->guid, $subject, $body, array(), 'email');
+	}
     system_message(elgg_echo('siteaccess:validate:user'));
 }
 

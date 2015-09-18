@@ -30,7 +30,7 @@ either expressed or implied, of the FreeBSD Project.
 
 $plugin = $vars['plugin'];
 
-$checkboxes = array('logincaptcha', 'regcaptcha', 'coppa', 'sitepassword', 'adminvalidate', 'icbsp', 'icbav');
+$checkboxes = array('logincaptcha', 'regcaptcha', 'coppa', 'sitepassword', 'icreg', 'adminvalidate', 'icbsp', 'icbav', 'usernotify');
 foreach ($checkboxes as $checkbox) {
     echo '<div>';
     echo '<label>';
@@ -67,9 +67,13 @@ echo '</div>';
 ?>
 
 <hr />
-<b><?php echo elgg_echo('siteaccess:notify:options');
-	 echo " (" . elgg_echo('siteaccess:notify:pending') . " " . siteaccess_count_users('admin_validated', '0') . ")";
-?></b>
+<b>
+<?php
+	$site = elgg_get_site_entity();
+	echo elgg_echo('siteaccess:notify:options');
+	echo " <a href=\"{$site->url}admin/users/siteaccess?tab=adminvalidate\">(" . elgg_echo('siteaccess:notify:pending') . " " . siteaccess_count_users('admin_validated', '0') . ")</a>";
+?>
+</b>
 <p>
     <?php
         echo elgg_echo('siteaccess:notify');
